@@ -22,41 +22,40 @@ RegisterNumber: 212225040194
 */
 
 import pandas as pd
-import numpy as np
 import matplotlib.pyplot as plt
-from sklearn.tree import DecisionTreeRegressor
-data = {
-    'Position': ['Business Analyst', 'Junior Consultant', 'Senior Consultant',
-                 'Manager', 'Country Manager', 'Region Manager',
-                 'Partner', 'Senior Partner', 'C-level', 'CEO'],
-    'Level': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-    'Salary': [45000, 50000, 60000, 80000, 110000, 150000, 200000, 300000, 500000, 1000000]
-}
-df = pd.DataFrame(data)
-X = df[['Level']]     
-y = df['Salary']      
-regressor = DecisionTreeRegressor(random_state=42)
-regressor.fit(X, y)
-y_pred = regressor.predict(X)
-print("Predicted salaries:", y_pred)
-level = np.array([[6.5]])
-predicted_salary = regressor.predict(level)
-print(f"Predicted Salary for level {level[0][0]}: {predicted_salary[0]}")
-X_grid = np.arange(min(X.values), max(X.values)+0.01, 0.01) 
-X_grid = X_grid.reshape(-1, 1)
-plt.scatter(X, y, color='red', label='Actual Salary')
-plt.plot(X_grid, regressor.predict(X_grid), color='blue', label='Decision Tree Prediction')
-plt.title('Decision Tree Regression: Level vs Salary')
-plt.xlabel('Level')
-plt.ylabel('Salary')
-plt.legend()
+from sklearn.model_selection import train_test_split
+from sklearn.tree import DecisionTreeRegressor, plot_tree
+from sklearn.metrics import accuracy_score, classification_report
+data = pd.read_csv("Salary.csv")
+X = data.drop("Salary", axis=1)
+y = data["Salary"]
+X = pd.get_dummies(X, drop_first=True)
+#X_train, X_test, y_train, y_test = train_test_split(    X, y, test_size=0.2, random_state=42)
+model = DecisionTreeRegressor(random_state=42)
+model.fit(X, y)
+y_pred = model.predict(X)
+# Accuracy
+print("\nAccuracy:", accuracy_score(y, y_pred)*100)
+
+# Classification Report
+print("\nClassification Report:")
+print(classification_report(y, y_pred))
+
+plt.figure(figsize=(25,12))
+plot_tree(
+    model,
+    feature_names=X.columns,
+    filled=True
+)
+
+plt.title("Decision Tree Regressor")
 plt.show()
 ```
 
 ## Output:
-<img width="943" height="80" alt="image" src="https://github.com/user-attachments/assets/f7badbd0-fc8b-42d7-9954-3cd3eed9d9b2" />
-<img width="893" height="616" alt="image" src="https://github.com/user-attachments/assets/a478fe59-84ee-4e11-8043-a8ce25b3611a" />
-
+<img width="1226" height="815" alt="mlpivc1" src="https://github.com/user-attachments/assets/a7652521-9424-41e9-af44-d936a7e36455" />
+<img width="1507" height="882" alt="mlpic" src="https://github.com/user-attachments/assets/28dd7e0d-7ac7-4df6-8a70-77ac8cccbfbd" />
+<img width="1600" height="831" alt="mlpic3" src="https://github.com/user-attachments/assets/be588fff-2374-485d-9361-6a5ec7ef1bac" />
 
 
 
